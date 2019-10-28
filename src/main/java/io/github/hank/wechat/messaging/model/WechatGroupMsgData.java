@@ -1,5 +1,7 @@
 package io.github.hank.wechat.messaging.model;
 
+import java.util.Objects;
+
 public class WechatGroupMsgData {
 
     private String chatid;
@@ -47,6 +49,22 @@ public class WechatGroupMsgData {
 
     public void setSafe(int safe) {
         this.safe = safe;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WechatGroupMsgData that = (WechatGroupMsgData) o;
+        return safe == that.safe &&
+                Objects.equals(chatid, that.chatid) &&
+                Objects.equals(msgtype, that.msgtype) &&
+                Objects.equals(text, that.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(chatid, msgtype, text, safe);
     }
 
 }

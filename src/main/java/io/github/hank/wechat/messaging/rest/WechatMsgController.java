@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/sendMessage")
 public class WechatMsgController {
 
     @Autowired
     private WechatMsgService wechatMsgService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/sendMessage/{groupId}")
+    @PostMapping("/{groupId}")
     public void sendGroupMsg(@PathVariable String groupId,
                              @RequestBody String text) {
         WechatGroupMsgData wechatGroupMsgData = new WechatGroupMsgData(groupId, "text",
@@ -19,9 +20,9 @@ public class WechatMsgController {
         wechatMsgService.sendGroupMsg(wechatGroupMsgData);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/sendMessage")
+    @RequestMapping
     public String hello() {
-        return "Hi!";
+        return "Hi! This is Hank!";
     }
 
 }

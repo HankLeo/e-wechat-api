@@ -1,6 +1,8 @@
-package io.github.hank.wechat.http;
+package io.github.hank.wechat.http.model;
 
-public class WechatToken {
+import java.util.Objects;
+
+public class WechatTokenData {
 
     private int errcode;
 
@@ -10,7 +12,7 @@ public class WechatToken {
 
     private int expires_in;
 
-    public WechatToken(int errcode, String errmsg, String access_token, int expires_in) {
+    public WechatTokenData(int errcode, String errmsg, String access_token, int expires_in) {
         this.errcode = errcode;
         this.errmsg = errmsg;
         this.access_token = access_token;
@@ -48,4 +50,21 @@ public class WechatToken {
     public void setExpires_in(int expires_in) {
         this.expires_in = expires_in;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WechatTokenData that = (WechatTokenData) o;
+        return errcode == that.errcode &&
+                expires_in == that.expires_in &&
+                Objects.equals(errmsg, that.errmsg) &&
+                Objects.equals(access_token, that.access_token);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(errcode, errmsg, access_token, expires_in);
+    }
+
 }

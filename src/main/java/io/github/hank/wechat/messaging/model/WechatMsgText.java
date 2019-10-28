@@ -1,5 +1,7 @@
 package io.github.hank.wechat.messaging.model;
 
+import java.util.Objects;
+
 public class WechatMsgText {
 
     String content;
@@ -14,6 +16,19 @@ public class WechatMsgText {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WechatMsgText that = (WechatMsgText) o;
+        return Objects.equals(content, that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content);
     }
 
 }

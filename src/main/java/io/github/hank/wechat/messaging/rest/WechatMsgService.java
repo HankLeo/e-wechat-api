@@ -1,53 +1,38 @@
 package io.github.hank.wechat.messaging.rest;
 
-import com.google.gson.Gson;
-import io.github.hank.wechat.http.WechatSender;
-import io.github.hank.wechat.http.WechatUriData;
+import io.github.hank.wechat.http.WechatTokenProvider;
+import io.github.hank.wechat.http.WechatUriComponentBuilder;
 import io.github.hank.wechat.messaging.model.WechatGroupMsgData;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
 
 @Service
 public class WechatMsgService {
 
     @Autowired
-    private WechatSender wechatSender;
+    private WechatTokenProvider wechatTokenProvider;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    private static final String MSG_PATH = "appchat";
+    private static final String SEND_API = "send";
 
     private static final Logger logger = LoggerFactory.getLogger(WechatMsgService.class);
 
-    private static final Gson gson = new Gson();
-
-    private CloseableHttpClient httpClient;
-
-    private HttpPost httpPost;
-
     public void sendGroupMsg(WechatGroupMsgData wechatGroupMsgData) {
-        httpClient = HttpClients.createDefault();
-        try {
-            String token = wechatSender.getToken();
-            httpPost = new HttpPost(String.format(WechatUriData.SEND_GROUP_MSG_URL, token));
-            httpPost.setEntity(new StringEntity(gson.toJson(wechatGroupMsgData), "utf-8"));
-            CloseableHttpResponse response = httpClient.execute(httpPost);
-            String res;
-            try {
-                HttpEntity entity = response.getEntity();
-                res = EntityUtils.toString(entity, "utf-8");
-            } finally {
-                response.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
-        }
+        String accessToken = wechatTokenProvider.getToken();
+
+        UriComponents uriComponents = new WechatUriComponentBuilder().path(MSG_PATH + "/" + SEND_API)
+                .queryParam(WechatUriComponentBuilder.WECHAT_API_TOKEN_PARAM, accessToken).build();
+        String uri = uriComponents.toUriString();
+
+        logger.info("Send group message: " + uri);
+        restTemplate.postForObject(uri, wechatGroupMsgData, String.class);
     }
 
 }
