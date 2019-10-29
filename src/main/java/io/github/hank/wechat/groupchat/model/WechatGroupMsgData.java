@@ -1,4 +1,4 @@
-package io.github.hank.wechat.messaging.model;
+package io.github.hank.wechat.groupchat.model;
 
 import java.util.Objects;
 
