@@ -47,4 +47,9 @@ public class WechatTokenProvider {
         return wechatTokenData == null ? null : wechatTokenData.getAccess_token();
     }
 
+    //TODO refesh token
+    private void clearCache(){
+
+    }
+
 }

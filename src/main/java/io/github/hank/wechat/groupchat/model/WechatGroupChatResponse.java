@@ -1,6 +1,6 @@
 package io.github.hank.wechat.groupchat.model;
 
-import io.github.hank.wechat.model.WechatResponse;
+import io.github.hank.wechat.util.WechatResponse;
 
 public class WechatGroupChatResponse extends WechatResponse {
 

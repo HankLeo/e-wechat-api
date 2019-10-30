@@ -1,5 +1,6 @@
 package io.github.hank.wechat.groupchat.rest;
 
+import io.github.hank.wechat.groupchat.model.WechatGroupChangeReq;
 import io.github.hank.wechat.groupchat.persistence.GroupChatRepository;
 import io.github.hank.wechat.http.WechatTokenProvider;
 import io.github.hank.wechat.http.WechatUriComponentBuilder;
@@ -32,6 +33,7 @@ public class GroupChatService {
     private static final String SEND_API = "send";
     private static final String GET_API = "get";
     private static final String CREATE_API = "create";
+    private static final String CHANGE_API = "update";
 
     private static final Logger logger = LoggerFactory.getLogger(GroupChatService.class);
 
@@ -42,10 +44,26 @@ public class GroupChatService {
                 .queryParam(WechatUriComponentBuilder.WECHAT_API_TOKEN_PARAM, accessToken).build();
         String uri = uriComponents.toUriString();
 
+        logger.info("Add group: " + uri);
         restTemplate.postForObject(uri, groupChatInfo, String.class);
         // TODO depend on we-chat-api response code
         saveGroupChat(groupChatInfo);
+        logger.info("Saved in local DB.");
+    }
 
+    public void changeGroupInfo(WechatGroupChangeReq request) {
+        String accessToken = wechatTokenProvider.getToken();
+
+        UriComponents uriComponents = new WechatUriComponentBuilder().path(GROUP_CHAT_PATH + CHANGE_API)
+                .queryParam(WechatUriComponentBuilder.WECHAT_API_TOKEN_PARAM, accessToken).build();
+        String uri = uriComponents.toUriString();
+
+        logger.info("Update group info: " + uri);
+        restTemplate.postForObject(uri, request, String.class);
+
+        String chatId = request.getChatid();
+        saveGroupChat(getGroupInfoByChatId(chatId));
+        logger.info("Updated in local DB.");
     }
 
     public void sendGroupMsg(WechatGroupMsgData wechatGroupMsgData) {

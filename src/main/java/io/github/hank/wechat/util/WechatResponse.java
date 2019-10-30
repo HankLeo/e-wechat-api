@@ -1,4 +1,4 @@
-package io.github.hank.wechat.model;
+package io.github.hank.wechat.util;
 
 public class WechatResponse {
 

@@ -1,6 +1,7 @@
 package io.github.hank.wechat.groupchat.rest;
 
 import io.github.hank.wechat.groupchat.model.GroupChatInfo;
+import io.github.hank.wechat.groupchat.model.WechatGroupChangeReq;
 import io.github.hank.wechat.groupchat.model.WechatGroupMsgData;
 import io.github.hank.wechat.groupchat.model.WechatMsgText;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,13 @@ public class GroupChatController {
     }
 
     @PostMapping("/update")
-    public void updategroup(@RequestParam("name") String name,
-                            @RequestParam("owner") String owner,
-                            @RequestParam("chatid") @NotNull String chatid,
-                            @RequestBody List<String> userlist) {
-
+    public void updategroup(@RequestParam("chatid") @NotNull String chatid,
+                            @RequestParam(value = "name", required = false) String name,
+                            @RequestParam(value = "owner", required = false) String owner,
+                            @RequestParam(value = "add_user_list", required = false) List<String> addUserList,
+                            @RequestParam(value = "del_user_list", required = false) List<String> delUserList) {
+        WechatGroupChangeReq request = new WechatGroupChangeReq(chatid, name, owner, addUserList, delUserList);
+        groupChatService.changeGroupInfo(request);
     }
 
     /**
